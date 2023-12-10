@@ -15,7 +15,7 @@ import java.util.Optional;
 public class TransactionService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private TransactionRepository transactionRepository;
@@ -23,20 +23,21 @@ public class TransactionService {
     @Transactional
     public Transaction dotransaction(Transaction transaction) {
 
-        Optional<User> payee = userRepository.findById(transaction.getPayee().getId());
-        Optional<User> payer = userRepository.findById(transaction.getPayer().getId());
+        User payee = userService.getUserById(transaction.getPayee().getId());
+        User payer = userService.getUserById(transaction.getPayer().getId());
 
-        if (!payerIsValid(payer.get()))
+
+        if (!payerIsValid(payer))
             throw new RuntimeException("Payer must be a Common User");
 
-        if(! payerHaveSufficientfunds(payer.get(),transaction))
+        if(! payerHaveSufficientfunds(payer,transaction))
             throw new RuntimeException("The payer doesn't have enough funds for this transaction.");
 
-        payee.get().setBalance(payee.get().getBalance().add(transaction.getValue()));
-        payer.get().setBalance(payer.get().getBalance().subtract(transaction.getValue()));
+        payee.setBalance(payee.getBalance().add(transaction.getValue()));
+        payer.setBalance(payer.getBalance().subtract(transaction.getValue()));
 
-        userRepository.save(payer.get());
-        userRepository.save(payee.get());
+        userService.saveUser(payer);
+        userService.saveUser(payee);
 
 
         return null;
