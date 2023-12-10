@@ -1,5 +1,7 @@
 package com.jonas.PaymentAccounts.service;
 
+import com.jonas.PaymentAccounts.model.DTO.TransactionDTO;
+import com.jonas.PaymentAccounts.model.DTO.TransactionRequestDTO;
 import com.jonas.PaymentAccounts.model.Transaction;
 import com.jonas.PaymentAccounts.model.User;
 import com.jonas.PaymentAccounts.model.enums.AccountType;
@@ -9,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -21,26 +24,37 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
 
     @Transactional
-    public Transaction dotransaction(Transaction transaction) {
+    public TransactionDTO dotransaction(TransactionRequestDTO transactionRequestDTO) {
 
-        User payee = userService.getUserById(transaction.getPayee().getId());
-        User payer = userService.getUserById(transaction.getPayer().getId());
-
+        User payee = userService.getUserById(transactionRequestDTO.getPayeeId());
+        User payer = userService.getUserById(transactionRequestDTO.getPayerId());
 
         if (!payerIsValid(payer))
             throw new RuntimeException("Payer must be a Common User");
 
-        if(! payerHaveSufficientfunds(payer,transaction))
+        if(! payerHaveSufficientfunds(payer,transactionRequestDTO))
             throw new RuntimeException("The payer doesn't have enough funds for this transaction.");
 
-        payee.setBalance(payee.getBalance().add(transaction.getValue()));
-        payer.setBalance(payer.getBalance().subtract(transaction.getValue()));
+        payee.setBalance(payee.getBalance().add(transactionRequestDTO.getValue()));
+        payer.setBalance(payer.getBalance().subtract(transactionRequestDTO.getValue()));
 
         userService.saveUser(payer);
         userService.saveUser(payee);
 
+        Transaction transaction = Transaction.builder()
+                .payee(payee)
+                .payer(payer)
+                .value(transactionRequestDTO.getValue()).build();
 
-        return null;
+        transactionRepository.save(transaction);
+
+        TransactionDTO transactionDTO = TransactionDTO.builder()
+                .namePayer(payer.getName())
+                .namePayee(payee.getName())
+                .value(transactionRequestDTO.getValue())
+                .build();
+
+        return transactionDTO;
     }
 
     private boolean payerIsValid(User payer) {
@@ -48,8 +62,8 @@ public class TransactionService {
 
     }
 
-    private boolean payerHaveSufficientfunds(User payer, Transaction transaction) {
-        int comparisonResult = payer.getBalance().compareTo(transaction.getValue());
+    private boolean payerHaveSufficientfunds(User payer, TransactionRequestDTO transactionRequestDTO) {
+        int comparisonResult = payer.getBalance().compareTo(transactionRequestDTO.getValue());
 
         return comparisonResult >= 0;
     }

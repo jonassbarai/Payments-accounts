@@ -39,4 +39,40 @@ public class Transaction {
 
     @Column(name = "Date_transaction")
     private LocalDateTime dateTime = LocalDateTime.now();
+
+    public static Builder builder() {
+        return new Builder();
+    }
+    public static class Builder {
+        private User payer;
+        private User payee;
+        private BigDecimal value;
+
+        private Builder() {
+            // Construtor privado para evitar instâncias diretas
+        }
+
+        public Builder payer(User payer) {
+            this.payer = payer;
+            return this;
+        }
+
+        public Builder payee(User payee) {
+            this.payee = payee;
+            return this;
+        }
+
+        public Builder value(BigDecimal value) {
+            this.value = value;
+            return this;
+        }
+
+        public Transaction build() {
+            Transaction transaction = new Transaction();
+            transaction.setPayer(this.payer);
+            transaction.setPayee(this.payee);
+            transaction.setValue(this.value);
+            return transaction;
+        }
+    }
 }
