@@ -1,5 +1,6 @@
 package com.jonas.PaymentAccounts.service;
 
+import com.jonas.PaymentAccounts.exceptions.BusinessException;
 import com.jonas.PaymentAccounts.model.DTO.TransactionDTO;
 import com.jonas.PaymentAccounts.model.DTO.TransactionRequestDTO;
 import com.jonas.PaymentAccounts.model.Transaction;
@@ -41,13 +42,13 @@ public class TransactionService {
         User payer = userService.getUserById(transactionRequestDTO.getPayerId());
 
         if (! authorizedTtransaction())
-            throw new RuntimeException("Transaction Unauthorized");
+            throw new BusinessException("Transaction Unauthorized");
 
         if (!payerIsValid(payer))
-            throw new RuntimeException("Payer must be a Common User");
+            throw new BusinessException("Payer must be a Common User");
 
         if(! payerHaveSufficientfunds(payer,transactionRequestDTO))
-            throw new RuntimeException("The payer doesn't have enough funds for this transaction.");
+            throw new BusinessException("The payer doesn't have enough funds for this transaction.");
 
         payee.setBalance(payee.getBalance().add(transactionRequestDTO.getValue()));
         payer.setBalance(payer.getBalance().subtract(transactionRequestDTO.getValue()));

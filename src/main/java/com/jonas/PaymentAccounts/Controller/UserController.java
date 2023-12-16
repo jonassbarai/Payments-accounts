@@ -3,6 +3,7 @@ package com.jonas.PaymentAccounts.Controller;
 import com.jonas.PaymentAccounts.model.DTO.UserUpdateDTO;
 import com.jonas.PaymentAccounts.model.User;
 import com.jonas.PaymentAccounts.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity saveUser(@RequestBody User userToCreate){
+    public ResponseEntity saveUser(@Valid @RequestBody User userToCreate){
         User user =  service.saveUser(userToCreate);
         return ResponseEntity.ok().body(user);
     }
