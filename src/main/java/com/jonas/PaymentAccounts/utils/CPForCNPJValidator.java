@@ -19,8 +19,6 @@ public class CPForCNPJValidator implements ConstraintValidator<CPForCNPJ, String
     }
 
     private boolean isValidCpf(String cpf) {
-        // Lógica de validação para CPF
-        // Implemente a lógica de validação para CPF aqui
         List<String> regexList = Arrays.asList(
                 "([0-9]{3}[.]?[0-9]{3}[.]?[0-9]{3}-[0-9]{2})|([0-9]{11})",
                 "^(?:(?!000\\.?000\\.?000-?00).)*$",
@@ -39,8 +37,6 @@ public class CPForCNPJValidator implements ConstraintValidator<CPForCNPJ, String
     }
 
     private boolean isValidCnpj(String cnpj) {
-        // Lógica de validação para CNPJ
-        // Implemente a lógica de validação para CNPJ aqui
         return cnpj.matches("([0-9]{2}[.]?[0-9]{3}[.]?[0-9]{3}[/]?[0-9]{4}[-]?[0-9]{2})");
     }
 }
