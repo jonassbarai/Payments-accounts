@@ -14,3 +14,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+
+springdoc:
+  paths-to-match: /transactions/**, /users/**
+  paths-to-exclude: /users/
+  swagger-ui:
+    path: /documentation
+    title: API de transações entre usuários lojistas e comuns

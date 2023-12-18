@@ -3,6 +3,7 @@ package com.jonas.PaymentAccounts.Controller;
 import com.jonas.PaymentAccounts.model.DTO.UserUpdateDTO;
 import com.jonas.PaymentAccounts.model.User;
 import com.jonas.PaymentAccounts.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
+@Tag(name = "usuarios",description = "endpoint de usuários")
 public class UserController {
 
     @Autowired
