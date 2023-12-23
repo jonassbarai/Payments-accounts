@@ -1,5 +1,6 @@
 package com.jonas.PaymentAccounts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jonas.PaymentAccounts.model.enums.AccountType;
 import com.jonas.PaymentAccounts.utils.CPForCNPJ;
@@ -9,15 +10,20 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tb_user")
-public class User {
+public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -26,7 +32,7 @@ public class User {
 
     @Column(unique = true, nullable = false, name = "CPF_CNPJ")
     @JsonProperty(value = "CPForCNPJ",required = true) @NotBlank @CPForCNPJ
-    @Schema(name = "cpf ou cnpj", description = "aceita-se com ou sem pontuação")
+    @Schema(description = "aceita-se com ou sem pontuação")
     private String CPForCNPJ;
 
     @Column(unique = true, nullable = false) @JsonProperty(required = true) @NotBlank
@@ -41,5 +47,36 @@ public class User {
     @JsonProperty(required = true)
     private BigDecimal balance;
 
-
+    @JsonIgnore
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.type == AccountType.COMMON)
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else return  List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    }
+    @JsonIgnore
+    @Override
+    public String getUsername() {
+        return this.name;
+    }
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+    @JsonIgnore
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

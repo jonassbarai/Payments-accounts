@@ -3,6 +3,7 @@ package com.jonas.PaymentAccounts.service;
 import com.jonas.PaymentAccounts.model.DTO.UserUpdateDTO;
 import com.jonas.PaymentAccounts.model.User;
 import com.jonas.PaymentAccounts.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class UserService {
     public User getUserById(long id){
          User user =  repository.findById(id).orElse(null);
           if (user == null)
-              throw new RuntimeException("user doesn't exists");
+              throw new EntityNotFoundException("user doesn't exists");
 
           return user;
     }

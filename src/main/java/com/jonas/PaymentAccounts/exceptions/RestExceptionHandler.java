@@ -1,5 +1,6 @@
 package com.jonas.PaymentAccounts.exceptions;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -65,6 +66,21 @@ public class RestExceptionHandler {
 
         ExceptionsDetails exceptionsDetails = new ExceptionsDetails(
                 "Validation Exception",
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                exception.getClass().getSimpleName(),
+                errors);
+
+        return new ResponseEntity<>(exceptionsDetails,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ExceptionsDetails> entityNotFoundExceptionHandler(EntityNotFoundException exception){
+        var errors = new HashMap<String,String>();
+        errors.put("error",exception.getMessage());
+
+        ExceptionsDetails exceptionsDetails = new ExceptionsDetails(
+                "Not Found Exception",
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 exception.getClass().getSimpleName(),
