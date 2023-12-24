@@ -8,7 +8,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -34,7 +38,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity saveUser(@Valid @RequestBody User userToCreate){
         User user =  service.saveUser(userToCreate);
-        return ResponseEntity.ok().body(user);
+
+        URI location = URI.create(String.format("/users/%s", userToCreate.getId()));
+
+        return ResponseEntity.created(location).body(user);
     }
     @PutMapping("/{id}")
     public ResponseEntity updateUser(@RequestBody UserUpdateDTO userDTO, @PathVariable long id){
