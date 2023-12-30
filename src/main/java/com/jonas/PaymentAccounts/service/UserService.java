@@ -5,6 +5,7 @@ import com.jonas.PaymentAccounts.model.User;
 import com.jonas.PaymentAccounts.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,8 +30,11 @@ public class UserService {
 
     public User saveUser(User user){
 
-       User userSaved = repository.save(user);
-        return userSaved;
+        String encriptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+        user.setPassword(encriptedPassword);
+
+        User userSaved = repository.save(user);
+          return userSaved;
     }
 
     public User updateUser(UserUpdateDTO userUpdateDTO){

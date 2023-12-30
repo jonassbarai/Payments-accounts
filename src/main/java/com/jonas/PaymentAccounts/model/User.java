@@ -3,12 +3,14 @@ package com.jonas.PaymentAccounts.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jonas.PaymentAccounts.model.enums.AccountType;
+import com.jonas.PaymentAccounts.model.enums.UserRole;
 import com.jonas.PaymentAccounts.utils.CPForCNPJ;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tb_user")
+@EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,12 +50,16 @@ public class User implements UserDetails {
     @JsonProperty(required = true)
     private BigDecimal balance;
 
+    @Schema(hidden = true)
+    private UserRole role = UserRole.USER;
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.type == AccountType.COMMON)
+        if (this.role == UserRole.ADMIN)
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        else return  List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        else
+            return  List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
     @JsonIgnore
     @Override

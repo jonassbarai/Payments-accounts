@@ -39,7 +39,11 @@ public class UserController {
     public ResponseEntity saveUser(@Valid @RequestBody User userToCreate){
         User user =  service.saveUser(userToCreate);
 
-        URI location = URI.create(String.format("/users/%s", userToCreate.getId()));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(user.getId())
+                .toUri();
 
         return ResponseEntity.created(location).body(user);
     }
