@@ -40,7 +40,6 @@ public class SecurityConfiguration {
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST,"/users").permitAll() //permite todos
-                        .requestMatchers(HttpMethod.GET,"/users").hasRole("USER")
                         .requestMatchers(WHITE_LIST).permitAll()
                         .anyRequest().authenticated()) //permite somente autenticados
                 .build();

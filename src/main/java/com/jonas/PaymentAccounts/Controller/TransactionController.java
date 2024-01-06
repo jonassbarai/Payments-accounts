@@ -4,6 +4,8 @@ import com.jonas.PaymentAccounts.model.DTO.TransactionDTO;
 import com.jonas.PaymentAccounts.model.DTO.TransactionRequestDTO;
 import com.jonas.PaymentAccounts.model.Transaction;
 import com.jonas.PaymentAccounts.service.TransactionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ public class TransactionController {
     private TransactionService service;
 
     @PostMapping
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity doTransaction(@RequestBody TransactionRequestDTO transactionRequestDTO){
 
         TransactionDTO transactionDTO = service.dotransaction(transactionRequestDTO);

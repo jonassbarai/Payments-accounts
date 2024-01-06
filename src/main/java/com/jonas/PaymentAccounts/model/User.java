@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jonas.PaymentAccounts.model.enums.AccountType;
 import com.jonas.PaymentAccounts.model.enums.UserRole;
 import com.jonas.PaymentAccounts.utils.CPForCNPJ;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -35,7 +36,7 @@ public class User implements UserDetails {
 
     @Column(unique = true, nullable = false, name = "CPF_CNPJ")
     @JsonProperty(value = "CPForCNPJ",required = true) @NotBlank @CPForCNPJ
-    @Schema(description = "aceita-se com ou sem pontuação")
+    @Schema(description = "aceita-se com ou sem pontuação", example = "12345678999")
     private String CPForCNPJ;
 
     @Column(unique = true, nullable = false) @JsonProperty(required = true) @NotBlank
