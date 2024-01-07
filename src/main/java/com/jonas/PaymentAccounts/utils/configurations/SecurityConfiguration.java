@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 //.headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.disable()) // deixar disable para o h2-console funcionar
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST,"/users").permitAll() //permite todos
+                        .requestMatchers(HttpMethod.POST,"/users/**").permitAll() //permite todos
                         .requestMatchers(WHITE_LIST).permitAll()
                         .anyRequest().authenticated()) //permite somente autenticados
                 .build();
