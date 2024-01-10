@@ -84,7 +84,7 @@ public class UserServiceTest {
 
     }
 
-    private static User buildUser(){
+    public static User buildUser(){
         Long id =1L;
         String name = "Fake User";
         String CPForCNPJ = "12345678999";
