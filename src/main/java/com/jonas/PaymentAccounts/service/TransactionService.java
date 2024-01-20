@@ -48,7 +48,7 @@ public class TransactionService {
             throw new BusinessException("Payer must be a Common User");
 
         if(! payerHaveSufficientfunds(payer,transactionRequestDTO))
-            throw new BusinessException("The payer doesn't have enough funds for this transaction.");
+            throw new BusinessException("The payer doesn't have enough funds for this transaction");
 
         payee.setBalance(payee.getBalance().add(transactionRequestDTO.getValue()));
         payer.setBalance(payer.getBalance().subtract(transactionRequestDTO.getValue()));
