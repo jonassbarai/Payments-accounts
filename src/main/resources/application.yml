@@ -1,34 +1,5 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:transations
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 123
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
-  security:
-    user:
-      name: user
-      password: password
-      roles: USER
-
-springdoc:
-  paths-to-match: /transactions/**, /users/**, /auth/**
-  paths-to-exclude: /users/
-  swagger-ui:
-    path: /documentation
-    title: API de transações entre usuários lojistas e comuns
-
-api:
-  security:
-    token:
-      secret: ${JWT_SECRET:my-secret-key}
-
+  profiles:
+    active: prod
 
 
