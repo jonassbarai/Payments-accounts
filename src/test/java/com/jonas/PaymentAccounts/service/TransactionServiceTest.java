@@ -1,5 +1,6 @@
 package com.jonas.PaymentAccounts.service;
 
+import com.jonas.PaymentAccounts.exceptions.BusinessException;
 import com.jonas.PaymentAccounts.model.DTO.TransactionDTO;
 import com.jonas.PaymentAccounts.model.DTO.TransactionRequestDTO;
 import com.jonas.PaymentAccounts.model.User;
@@ -74,6 +75,79 @@ public class TransactionServiceTest {
         Assertions.assertThat(userPayee.getBalance()).isEqualTo(expectedPayeeBalance);
         Assertions.assertThat(userPayer.getBalance()).isEqualTo(expectedPayerBalance);
 
+    }
+
+    @Test
+    void transactionNotAuthorizedAndThowBussinessException(){
+        TransactionRequestDTO requestDTO = new TransactionRequestDTO(1,2, BigDecimal.valueOf(350.00));
+
+        User userPayer = UserServiceTest.buildUser();
+        User userPayee = UserServiceTest.buildUser();
+
+        userPayee.setId(2L);
+        userPayee.setName("User payee");
+        userPayee.setType(AccountType.SHOPKEEPER);
+        userPayee.setBalance(BigDecimal.valueOf(100.99));
+
+        when(userService.getUserById(userPayer.getId())).thenReturn(userPayer);
+        when(userService.getUserById(userPayee.getId())).thenReturn(userPayee);
+        when(restTemplate.getForEntity(anyString(),eq(Map.class)))
+                .thenReturn(
+                        new ResponseEntity<>(Map.of("message","Não Autorizado"), HttpStatus.BAD_REQUEST) );
+
+        Assertions.assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> transactionService.dotransaction(requestDTO))
+                .withMessage("Transaction Unauthorized");
+
+    }
+
+    @Test
+    void transactionByAShopkeeperAndThowBussinessException(){
+        TransactionRequestDTO requestDTO = new TransactionRequestDTO(2,1, BigDecimal.valueOf(350.00));
+
+        User userPayer = UserServiceTest.buildUser();
+        User userPayee = UserServiceTest.buildUser();
+
+        userPayer.setId(2L);
+        userPayer.setName("User payer");
+        userPayer.setType(AccountType.SHOPKEEPER);
+        userPayer.setBalance(BigDecimal.valueOf(100.99));
+
+        when(userService.getUserById(userPayer.getId())).thenReturn(userPayer);
+        when(userService.getUserById(userPayee.getId())).thenReturn(userPayee);
+        when(restTemplate.getForEntity(anyString(),eq(Map.class)))
+                .thenReturn(
+                        new ResponseEntity<>(Map.of("message","Autorizado"), HttpStatus.OK) );
+
+        Assertions.assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> transactionService.dotransaction(requestDTO))
+                .withMessage("Payer must be a Common User");
+
+    }
+
+    @Test
+    void transactionWithouFoundsAndThowBussinessException(){
+        TransactionRequestDTO requestDTO = new TransactionRequestDTO(1,2, BigDecimal.valueOf(350.00));
+
+        User userPayer = UserServiceTest.buildUser();
+        User userPayee = UserServiceTest.buildUser();
+
+        userPayer.setBalance( BigDecimal.valueOf(10.00));
+
+        userPayee.setId(2L);
+        userPayee.setName("User payer");
+        userPayee.setType(AccountType.SHOPKEEPER);
+        userPayee.setBalance(BigDecimal.valueOf(100.99));
+
+        when(userService.getUserById(userPayer.getId())).thenReturn(userPayer);
+        when(userService.getUserById(userPayee.getId())).thenReturn(userPayee);
+        when(restTemplate.getForEntity(anyString(),eq(Map.class)))
+                .thenReturn(
+                        new ResponseEntity<>(Map.of("message","Autorizado"), HttpStatus.OK) );
+
+        Assertions.assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> transactionService.dotransaction(requestDTO))
+                .withMessage("The payer doesn't have enough funds for this transaction");
     }
 
 }

@@ -54,6 +54,14 @@ public class User implements UserDetails {
     @Schema(hidden = true)
     private UserRole role = UserRole.USER;
 
+    public void deposit(BigDecimal amount){
+        this.balance = this.balance.add(amount);
+    }
+
+    public void withdraw(BigDecimal amount){
+        this.balance = this.balance.subtract(amount);
+    }
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

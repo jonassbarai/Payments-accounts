@@ -40,7 +40,7 @@ public class UserController {
     }
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @GetMapping("/{id}")
-    public ResponseEntity getAllUsers(@PathVariable long id){
+    public ResponseEntity getUserById(@PathVariable long id){
         User user = service.getUserById(id);
         return ResponseEntity.ok().body(user);
     }
