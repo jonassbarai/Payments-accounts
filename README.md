@@ -13,7 +13,7 @@ Este é um projeto Spring Backend que oferece serviços para contas de pagamento
 
 ## Deploy
 Foi feito o deploy via dockerfile na plataforma render, acesse o link: https://api-payments-accounts.onrender.com/swagger-ui/index.html#/
-
+Como é foi feito de forma gratuíta, o build é lento...
 
 
 ## Observações de uso
